@@ -11,7 +11,7 @@ export const LessonCard: React.FC<LessonCardProps> = ({ lesson }) => {
     <div className="card">
       <h3 style={{ marginBottom: '0.5rem' }}>{lesson.title}</h3>
       <p style={{ color: 'var(--text-muted)', marginBottom: '1rem' }}>
-        {lesson.textContent.substring(0, 100)}...
+        {lesson.pages?.[0]?.text?.substring(0, 100) || ''}...
       </p>
       <Link to={`/lesson/${lesson.id}`} className="btn btn-secondary">
         View Lesson

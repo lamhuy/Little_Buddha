@@ -49,7 +49,7 @@ export const LessonList = ({ onSelectLesson }: { onSelectLesson: (id: string) =>
               testID={`lesson-item-${index}`}
             >
               <Text style={styles.cardTitle}>{item.title}</Text>
-              <Text style={styles.cardSnippet} numberOfLines={2}>{item.textContent}</Text>
+              <Text style={styles.cardSnippet} numberOfLines={2}>{item.pages?.[0]?.text || ''}</Text>
             </TouchableOpacity>
           )}
         />

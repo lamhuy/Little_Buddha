@@ -9,12 +9,17 @@ export interface UserProfile {
     birth_year: number;
 }
 
+export interface LessonPage {
+    text: string;
+    audioRef: string;
+    imageRef?: string;
+}
+
 export interface EducationalModule {
     id?: string; // Derived from Firestore Document snapshot ID
     title: string;
-    textContent: string;
+    pages: LessonPage[];
     targetAgeTier: '0-7' | '8-12' | '13-18';
-    audioRef: string; // Firebase Cloud Storage generic path
     summaryPoints: string[];
     discussionQuestions: string[];
 }

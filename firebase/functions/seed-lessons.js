@@ -1,17 +1,48 @@
 const admin = require('firebase-admin');
 const { getFirestore } = require('firebase-admin/firestore');
 const { getStorage } = require('firebase-admin/storage');
+const { GoogleGenAI } = require('@google/genai');
+const path = require('path');
 
-process.env.FIRESTORE_EMULATOR_HOST = '127.0.0.1:8080';
-process.env.FIREBASE_STORAGE_EMULATOR_HOST = '127.0.0.1:9199';
+const PRODUCTION_PROJECT_ID = 'little-buddha-ff838';
 
-admin.initializeApp({ 
+function enableEmulatorEnv() {
+  process.env.FIRESTORE_EMULATOR_HOST = '127.0.0.1:8080';
+  process.env.FIREBASE_STORAGE_EMULATOR_HOST = '127.0.0.1:9199';
+}
+
+function disableEmulatorEnv() {
+  delete process.env.FIRESTORE_EMULATOR_HOST;
+  delete process.env.FIREBASE_STORAGE_EMULATOR_HOST;
+}
+
+// ── Emulator App ──
+enableEmulatorEnv();
+const emulatorApp = admin.initializeApp({ 
   projectId: "demo-little-buddha",
   storageBucket: "demo-little-buddha.appspot.com" 
-});
+}, 'emulator');
+const emulatorDb = getFirestore(emulatorApp);
+const emulatorBucket = getStorage(emulatorApp).bucket();
 
-const db = getFirestore();
-const bucket = getStorage().bucket();
+// ── Production App ──
+disableEmulatorEnv();
+const keyPath = path.join(__dirname, 'serviceAccountKey.json');
+let credential;
+try {
+  credential = admin.credential.cert(require(keyPath));
+} catch (e) {
+  console.error("Missing serviceAccountKey.json for production!");
+  process.exit(1);
+}
+
+const prodApp = admin.initializeApp({
+  projectId: PRODUCTION_PROJECT_ID,
+  storageBucket: `${PRODUCTION_PROJECT_ID}.firebasestorage.app`,
+  credential,
+}, 'production');
+const prodDb = getFirestore(prodApp);
+const prodBucket = getStorage(prodApp).bucket();
 
 async function generateTTS(text) {
   // Using Google Translate TTS as a free, open endpoint for dummy audio. Max 200 chars.
@@ -21,6 +52,48 @@ async function generateTTS(text) {
   if (!response.ok) throw new Error(`TTS Fetch Failed: ${response.statusText}`);
   const arrayBuffer = await response.arrayBuffer();
   return Buffer.from(arrayBuffer);
+}
+
+async function generateImageBuffer(text) {
+  const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+  const fallback = async () => {
+    const res = await fetch(`https://placehold.co/600x400/png?text=Illustration+Scene`);
+    return Buffer.from(await res.arrayBuffer());
+  };
+
+  if (!GEMINI_API_KEY) {
+    console.warn("  [!] GEMINI_API_KEY is missing. Using placeholder image.");
+    return fallback();
+  }
+
+  try {
+    const ai = new GoogleGenAI({ apiKey: GEMINI_API_KEY });
+    const shortText = text.substring(0, 150).replace(/\n/g, ' ');
+    const prompt = `A soft, beautiful children's book digital illustration. Warm pastel colors, gentle brushwork. Scene: ${shortText}`;
+
+    console.log(`    Requesting Gemini image generation...`);
+    const response = await ai.models.generateContent({
+      model: 'gemini-3.1-flash-image-preview',
+      contents: prompt,
+      config: {
+        responseModalities: ['IMAGE', 'TEXT'],
+      },
+    });
+
+    const imagePart = response.candidates?.[0]?.content?.parts?.find(
+      p => p.inlineData?.mimeType?.startsWith('image/')
+    );
+
+    if (!imagePart) {
+      throw new Error('No image part returned from Gemini');
+    }
+
+    console.log(`    Image generated successfully!`);
+    return Buffer.from(imagePart.inlineData.data, 'base64');
+  } catch (err) {
+    console.error('  [!] Gemini image generation failed, using placeholder:', err.message);
+    return fallback();
+  }
 }
 
 async function seed() {
@@ -130,21 +203,72 @@ async function seed() {
     ];
 
     for (const lesson of lessons) {
-      // 1. Save to Firestore
-      await db.collection("lessons").doc(lesson.id).set(lesson);
-      console.log(`Created lesson document: ${lesson.title} (${lesson.targetAgeTier})`);
-
-      // 2. Generate and Save Audio to Storage
-      console.log(`  Generating audio for ${lesson.audioRef}...`);
-      const audioBuffer = await generateTTS(lesson.textContent);
+      const paragraphs = lesson.textContent.split('\n\n').map(p => p.trim()).filter(p => p.length > 0);
+      const pages = [];
       
-      const file = bucket.file(lesson.audioRef);
-      await file.save(audioBuffer, {
-        contentType: 'audio/mpeg'
-      });
-      console.log(`  Successfully uploaded ${lesson.audioRef} to Storage Emulator!`);
+      let pageIndex = 1;
+      for (const paragraph of paragraphs) {
+        const pageAudioRef = `audio/${lesson.id}-page-${pageIndex}.mp3`;
+        const pageImageRef = `images/${lesson.id}-page-${pageIndex}.jpg`;
+        disableEmulatorEnv();
+        const [prodAudioExists] = await prodBucket.file(pageAudioRef).exists();
+        enableEmulatorEnv();
+        const [emuAudioExists] = await emulatorBucket.file(pageAudioRef).exists();
+
+        if (prodAudioExists && emuAudioExists) {
+          console.log(`  Audio ${pageAudioRef} already exists. Skipping.`);
+        } else {
+          console.log(`  Generating audio for ${pageAudioRef}...`);
+          const audioBuffer = await generateTTS(paragraph);
+          
+          enableEmulatorEnv();
+          await emulatorBucket.file(pageAudioRef).save(audioBuffer, { contentType: 'audio/mpeg' });
+          disableEmulatorEnv();
+          await prodBucket.file(pageAudioRef).save(audioBuffer, { contentType: 'audio/mpeg' });
+          console.log(`  Successfully uploaded ${pageAudioRef} to emulator and prod!`);
+        }
+
+        disableEmulatorEnv();
+        const [prodImgExists] = await prodBucket.file(pageImageRef).exists();
+        enableEmulatorEnv();
+        const [emuImgExists] = await emulatorBucket.file(pageImageRef).exists();
+
+        if (prodImgExists && emuImgExists) {
+          console.log(`  Image ${pageImageRef} already exists. Skipping.`);
+        } else {
+          console.log(`  Generating image for ${pageImageRef}...`);
+          const imgBuffer = await generateImageBuffer(paragraph);
+          
+          enableEmulatorEnv();
+          await emulatorBucket.file(pageImageRef).save(imgBuffer, { contentType: 'image/jpeg' });
+          disableEmulatorEnv();
+          await prodBucket.file(pageImageRef).save(imgBuffer, { contentType: 'image/jpeg' });
+          console.log(`  Successfully uploaded ${pageImageRef} to emulator and prod!`);
+        }
+        
+        pages.push({
+          text: paragraph,
+          audioRef: pageAudioRef,
+          imageRef: pageImageRef
+        });
+        pageIndex++;
+      }
+
+      // Transform lesson object for Firestore
+      const firestoreLesson = { ...lesson };
+      delete firestoreLesson.textContent;
+      delete firestoreLesson.audioRef;
+      firestoreLesson.pages = pages;
+
+      // Save to both Firestores
+      enableEmulatorEnv();
+      await emulatorDb.collection("lessons").doc(lesson.id).set(firestoreLesson);
+      disableEmulatorEnv();
+      await prodDb.collection("lessons").doc(lesson.id).set(firestoreLesson);
+      
+      console.log(`Created lesson document: ${lesson.title} (${lesson.targetAgeTier}) in both emulator and prod.`);
     }
-    console.log("Lessons and audio seeded successfully into the emulator!");
+    console.log("Lessons and audio seeded successfully into emulator and production!");
   } catch (err) {
     console.error("Error seeding lessons:", err);
   }

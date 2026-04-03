@@ -4,12 +4,17 @@ import { DynamoDBDocumentClient, QueryCommand } from '@aws-sdk/lib-dynamodb';
 const ddbClient = new DynamoDBClient({});
 const docClient = DynamoDBDocumentClient.from(ddbClient);
 
+export interface LessonPage {
+    text: string;
+    audioUrl: string;
+    imageRef?: string;
+}
+
 export interface EducationalModule {
     id: string;
     title: string;
-    textContent: string;
+    pages: LessonPage[];
     targetAgeTier: '0-7' | '8-12' | '13-18';
-    audioUrl: string; // CloudFront URL path
     summaryPoints: string[];
     discussionQuestions: string[];
 }
