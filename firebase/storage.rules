@@ -1,0 +1,22 @@
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+    
+    // User profile images (if needed later)
+    match /users/{userId}/{allPaths=**} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // Audio lessons: public read strictly for authenticated users
+    match /audio/{lessonId} {
+      allow read: if request.auth != null;
+      allow write: if false; // Only admin SDKs upload
+    }
+    
+    // Deny everything else by default
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

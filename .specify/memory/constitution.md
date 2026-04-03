@@ -1,50 +1,50 @@
-# [PROJECT_NAME] Constitution
-<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
+<!-- 
+Sync Impact Report:
+- Version: 1.0.0
+- Modified principles:
+  - PRINCIPLE_1 -> I. Cross-Platform First (Expo/React Native)
+  - PRINCIPLE_2 -> II. Direct API Integration (RESTful)
+  - PRINCIPLE_3 -> III. Comprehensive E2E Testing
+  - PRINCIPLE_4 -> IV. Component-Driven Mobile UI
+  - PRINCIPLE_5 -> V. Strict Typing and Validation
+- Added sections: Architecture Constraints, Quality Gates & Workflow
+- Removed sections: N/A
+- Templates requiring updates: ⚠ Pending verification
+- Follow-up TODOs: None.
+-->
+# Mobile App & API Constitution
 
 ## Core Principles
 
-### [PRINCIPLE_1_NAME]
-<!-- Example: I. Library-First -->
-[PRINCIPLE_1_DESCRIPTION]
-<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
+### I. Cross-Platform First (Expo/React Native)
+Code MUST be written to support both iOS and Android natively via Expo and React Native. Platform-specific code SHOULD be minimized and cleanly abstracted.
 
-### [PRINCIPLE_2_NAME]
-<!-- Example: II. CLI Interface -->
-[PRINCIPLE_2_DESCRIPTION]
-<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
+### II. Direct API Integration (RESTful)
+The mobile app MUST consume dynamic content exclusively via the unified RESTful Backend API. Direct database access from the mobile client is strictly forbidden.
 
-### [PRINCIPLE_3_NAME]
-<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
-[PRINCIPLE_3_DESCRIPTION]
-<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
+### III. Comprehensive E2E Testing
+All backend APIs MUST be guarded with Playwright E2E tests. The mobile app MUST have critical user flows guarded by Detox E2E tests. Tests MUST pass before merging.
 
-### [PRINCIPLE_4_NAME]
-<!-- Example: IV. Integration Testing -->
-[PRINCIPLE_4_DESCRIPTION]
-<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
+### IV. Component-Driven Mobile UI
+The mobile UI MUST be built using reusable, highly-cohesive React Native components. Complex state MUST be separated from presentation components.
 
-### [PRINCIPLE_5_NAME]
-<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
-[PRINCIPLE_5_DESCRIPTION]
-<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
+### V. Strict Typing and Validation
+Both frontend and backend MUST utilize strict typings (e.g., TypeScript) and validate all data payloads at the API boundary to prevent malformed content from reaching the mobile client.
 
-## [SECTION_2_NAME]
-<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
+## Architecture Constraints
 
-[SECTION_2_CONTENT]
-<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
+- **Backend**: RESTful API, stateless authentication, structured JSON responses.
+- **Mobile**: Expo managed workflow preferred unless bare workflow is required by native modules.
+- **Data Fetching**: Use robust data fetching libraries with caching support.
 
-## [SECTION_3_NAME]
-<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
+## Quality Gates & Workflow
 
-[SECTION_3_CONTENT]
-<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
+- CI/CD pipeline MUST run Playwright tests for API changes.
+- CI/CD pipeline MUST run Detox tests for mobile app changes.
+- PRs MUST contain a description of the testing performed.
 
 ## Governance
-<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
 
-[GOVERNANCE_RULES]
-<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
+Any deviations from Expo-compatible modules MUST be explicitly approved by the technical lead. API breaks MUST be versioned to prevent mobile client breakage.
 
-**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
-<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->
+**Version**: 1.0.0 | **Ratified**: 2026-03-28 | **Last Amended**: 2026-03-28

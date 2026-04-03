@@ -1,0 +1,44 @@
+name: Deploy to Firebase
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  test-rules:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+      - name: Install dependencies
+        working-directory: firebase/functions
+        run: npm ci
+      - name: Install Firebase CLI
+        run: npm install -g firebase-tools
+      - name: Run Emulator Tests
+        working-directory: firebase
+        run: firebase emulators:exec "cd tests && npm test"
+        
+  deploy-firebase:
+    needs: test-rules
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+      - name: Install Firebase CLI
+        run: npm install -g firebase-tools
+      - name: Install Functions Dependencies
+        working-directory: firebase/functions
+        run: npm ci
+      - name: Deploy to Firebase
+        working-directory: firebase
+        run: firebase deploy --token ${{ secrets.FIREBASE_TOKEN }}

@@ -1,0 +1,18 @@
+default_platform(:ios)
+
+platform :ios do
+  desc "Push a new beta build to TestFlight"
+  lane :beta do
+    increment_build_number(xcodeproj: "LittleBuddha.xcodeproj")
+    build_app(workspace: "LittleBuddha.xcworkspace", scheme: "LittleBuddha")
+    upload_to_testflight
+  end
+end
+
+platform :android do
+  desc "Submit a new Beta Build to Play Store"
+  lane :beta do
+    gradle(task: 'clean assembleRelease')
+    upload_to_play_store(track: 'beta')
+  end
+end

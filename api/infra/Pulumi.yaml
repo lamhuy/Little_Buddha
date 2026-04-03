@@ -1,0 +1,4 @@
+name: little-buddha-dev
+runtime: nodejs
+description: Serverless backend for Little Buddha App
+main: main.ts
