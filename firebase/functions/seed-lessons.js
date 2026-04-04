@@ -14,6 +14,7 @@ function enableEmulatorEnv() {
 function disableEmulatorEnv() {
   delete process.env.FIRESTORE_EMULATOR_HOST;
   delete process.env.FIREBASE_STORAGE_EMULATOR_HOST;
+  delete process.env.STORAGE_EMULATOR_HOST; // firebase-admin secretly injects this under the hood!
 }
 
 // ── Emulator App ──
@@ -36,13 +37,20 @@ try {
   process.exit(1);
 }
 
+const { Storage } = require('@google-cloud/storage');
+
 const prodApp = admin.initializeApp({
   projectId: PRODUCTION_PROJECT_ID,
-  storageBucket: `${PRODUCTION_PROJECT_ID}.firebasestorage.app`,
   credential,
 }, 'production');
 const prodDb = getFirestore(prodApp);
-const prodBucket = getStorage(prodApp).bucket();
+
+// Use native Storage library to bypass firebase-admin emulator caching bug
+const prodStorage = new Storage({
+  projectId: PRODUCTION_PROJECT_ID,
+  keyFilename: keyPath,
+});
+const prodBucket = prodStorage.bucket(`${PRODUCTION_PROJECT_ID}.firebasestorage.app`);
 
 async function generateTTS(text) {
   // Using Google Translate TTS as a free, open endpoint for dummy audio. Max 200 chars.
