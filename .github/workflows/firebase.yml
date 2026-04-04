@@ -52,4 +52,7 @@ jobs:
         run: npm ci
       - name: Deploy to Firebase
         working-directory: firebase
-        run: firebase deploy --token ${{ secrets.FIREBASE_TOKEN }}
+        run: |
+          echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}' > sa.json
+          export GOOGLE_APPLICATION_CREDENTIALS="${GITHUB_WORKSPACE}/firebase/sa.json"
+          firebase deploy
