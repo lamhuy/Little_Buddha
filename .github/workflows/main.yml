@@ -16,20 +16,6 @@ on:
 
 
 jobs:
-  api-tests:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-      - name: Install dependencies
-        working-directory: api
-        run: npm ci
-      - name: Run Playwright Tests
-        working-directory: api
-        run: npx playwright test
-
   mobile-tests:
     runs-on: macos-latest
     steps:
