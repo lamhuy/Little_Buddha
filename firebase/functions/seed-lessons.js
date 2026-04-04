@@ -19,9 +19,9 @@ function disableEmulatorEnv() {
 
 // ── Emulator App ──
 enableEmulatorEnv();
-const emulatorApp = admin.initializeApp({ 
-  projectId: "demo-little-buddha",
-  storageBucket: "demo-little-buddha.appspot.com" 
+const emulatorApp = admin.initializeApp({
+  projectId: "little-buddha-ff838",
+  storageBucket: "little-buddha-ff838.appspot.com"
 }, 'emulator');
 const emulatorDb = getFirestore(emulatorApp);
 const emulatorBucket = getStorage(emulatorApp).bucket();
@@ -54,7 +54,7 @@ const prodBucket = prodStorage.bucket(`${PRODUCTION_PROJECT_ID}.firebasestorage.
 
 async function generateTTS(text) {
   // Using Google Translate TTS as a free, open endpoint for dummy audio. Max 200 chars.
-  const shortText = text.substring(0, 200); 
+  const shortText = text.substring(0, 200);
   const ttsUrl = `https://translate.google.com/translate_tts?ie=UTF-8&tl=en&client=tw-ob&q=${encodeURIComponent(shortText)}`;
   const response = await fetch(ttsUrl);
   if (!response.ok) throw new Error(`TTS Fetch Failed: ${response.statusText}`);
@@ -213,7 +213,7 @@ async function seed() {
     for (const lesson of lessons) {
       const paragraphs = lesson.textContent.split('\n\n').map(p => p.trim()).filter(p => p.length > 0);
       const pages = [];
-      
+
       let pageIndex = 1;
       for (const paragraph of paragraphs) {
         const pageAudioRef = `audio/${lesson.id}-page-${pageIndex}.mp3`;
@@ -228,7 +228,7 @@ async function seed() {
         } else {
           console.log(`  Generating audio for ${pageAudioRef}...`);
           const audioBuffer = await generateTTS(paragraph);
-          
+
           enableEmulatorEnv();
           await emulatorBucket.file(pageAudioRef).save(audioBuffer, { contentType: 'audio/mpeg' });
           disableEmulatorEnv();
@@ -246,14 +246,14 @@ async function seed() {
         } else {
           console.log(`  Generating image for ${pageImageRef}...`);
           const imgBuffer = await generateImageBuffer(paragraph);
-          
+
           enableEmulatorEnv();
           await emulatorBucket.file(pageImageRef).save(imgBuffer, { contentType: 'image/jpeg' });
           disableEmulatorEnv();
           await prodBucket.file(pageImageRef).save(imgBuffer, { contentType: 'image/jpeg' });
           console.log(`  Successfully uploaded ${pageImageRef} to emulator and prod!`);
         }
-        
+
         pages.push({
           text: paragraph,
           audioRef: pageAudioRef,
@@ -273,7 +273,7 @@ async function seed() {
       await emulatorDb.collection("lessons").doc(lesson.id).set(firestoreLesson);
       disableEmulatorEnv();
       await prodDb.collection("lessons").doc(lesson.id).set(firestoreLesson);
-      
+
       console.log(`Created lesson document: ${lesson.title} (${lesson.targetAgeTier}) in both emulator and prod.`);
     }
     console.log("Lessons and audio seeded successfully into emulator and production!");

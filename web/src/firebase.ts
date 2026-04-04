@@ -4,10 +4,10 @@ import { getFirestore, connectFirestoreEmulator } from 'firebase/firestore';
 import { getStorage, connectStorageEmulator } from 'firebase/storage';
 
 const firebaseConfig = {
-  projectId: "demo-little-buddha",
+  projectId: "little-buddha-ff838",
   apiKey: "demo-api-key",
-  authDomain: "demo-little-buddha.firebaseapp.com",
-  storageBucket: "demo-little-buddha.appspot.com",
+  authDomain: "little-buddha-ff838.firebaseapp.com",
+  storageBucket: "little-buddha-ff838.firebaseapp.com",
 };
 
 const app = initializeApp(firebaseConfig);
