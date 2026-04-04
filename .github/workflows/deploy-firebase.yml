@@ -36,6 +36,7 @@ jobs:
         run: npm install -g firebase-tools
       - name: Deploy to Firebase Hosting
         working-directory: ./firebase
-        env:
-          GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
-        run: firebase deploy --only hosting
+        run: |
+          echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}' > sa.json
+          export GOOGLE_APPLICATION_CREDENTIALS="${GITHUB_WORKSPACE}/firebase/sa.json"
+          firebase deploy --only hosting
