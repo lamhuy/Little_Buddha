@@ -34,7 +34,7 @@ export const LessonDetailPage: React.FC = () => {
 
   return (
     <div className="container animate-fade-in" style={{ padding: '2rem 1.5rem', maxWidth: '800px' }}>
-      <Link to="/" style={{ display: 'inline-block', marginBottom: '1.5rem', fontWeight: 500 }}>&larr; Back to Home</Link>
+      <Link to="/select-age" style={{ display: 'inline-block', marginBottom: '1.5rem', fontWeight: 500 }}>&larr; Back to Age Groups</Link>
       
       <div className="card" style={{ display: 'flex', flexDirection: 'column', minHeight: '60vh' }}>
         <h1 style={{ fontSize: '2.5rem', marginBottom: '1rem', letterSpacing: '-0.02em', lineHeight: '1.2' }}>{lesson.title}</h1>
