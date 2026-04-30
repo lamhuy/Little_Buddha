@@ -23,13 +23,13 @@ function disableEmulatorEnv() {
 enableEmulatorEnv();
 const emulatorApp = admin.initializeApp({
   projectId: "little-buddha-ff838",
-  storageBucket: "little-buddha-ff838.appspot.com"
+  storageBucket: "little-buddha-ff838.firebasestorage.app"
 }, 'emulator');
 const emulatorDb = getFirestore(emulatorApp);
 const emulatorBucket = getStorage(emulatorApp).bucket();
 
 // ── Production App ──
-disableEmulatorEnv();tresanti-charlie-rotating-vanityTresanti Charlie Rotating Vanity
+disableEmulatorEnv();
 const keyPath = path.join(__dirname, 'serviceAccountKey.json');
 let credential;
 try {
@@ -367,11 +367,19 @@ async function seed() {
         const pageImageRef = `images/${lesson.id}-page-${pageIndex}.jpg`;
         disableEmulatorEnv();
         const [prodAudioExists] = await prodBucket.file(pageAudioRef).exists();
-        enableEmulatorEnv();
-        const [emuAudioExists] = await emulatorBucket.file(pageAudioRef).exists();
 
-        if (prodAudioExists && emuAudioExists) {
-          console.log(`  Audio ${pageAudioRef} already exists. Skipping.`);
+        if (prodAudioExists) {
+          enableEmulatorEnv();
+          const [emuAudioExists] = await emulatorBucket.file(pageAudioRef).exists();
+          if (!emuAudioExists) {
+            console.log(`  Downloading audio ${pageAudioRef} from prod to stage in emulator...`);
+            disableEmulatorEnv();
+            const [audioBuffer] = await prodBucket.file(pageAudioRef).download();
+            enableEmulatorEnv();
+            await emulatorBucket.file(pageAudioRef).save(audioBuffer, { contentType: 'audio/mpeg' });
+          } else {
+            console.log(`  Audio ${pageAudioRef} already exists in emulator. Skipping.`);
+          }
         } else {
           console.log(`  Generating audio for ${pageAudioRef}...`);
           const audioBuffer = await generateTTS(paragraph);
@@ -385,11 +393,19 @@ async function seed() {
 
         disableEmulatorEnv();
         const [prodImgExists] = await prodBucket.file(pageImageRef).exists();
-        enableEmulatorEnv();
-        const [emuImgExists] = await emulatorBucket.file(pageImageRef).exists();
 
-        if (prodImgExists && emuImgExists) {
-          console.log(`  Image ${pageImageRef} already exists. Skipping.`);
+        if (prodImgExists) {
+          enableEmulatorEnv();
+          const [emuImgExists] = await emulatorBucket.file(pageImageRef).exists();
+          if (!emuImgExists) {
+            console.log(`  Downloading image ${pageImageRef} from prod to stage in emulator...`);
+            disableEmulatorEnv();
+            const [imgBuffer] = await prodBucket.file(pageImageRef).download();
+            enableEmulatorEnv();
+            await emulatorBucket.file(pageImageRef).save(imgBuffer, { contentType: 'image/jpeg' });
+          } else {
+            console.log(`  Image ${pageImageRef} already exists in emulator. Skipping.`);
+          }
         } else {
           console.log(`  Generating image for ${pageImageRef}...`);
           const imgBuffer = await generateImageBuffer(paragraph);

@@ -10,13 +10,13 @@ service firebase.storage {
 
     // Audio lessons: public read strictly for authenticated users
     match /audio/{lessonId} {
-      allow read: if request.auth != null;
+      allow read: if true;
       allow write: if false; // Only admin SDKs upload
     }
 
     // Lesson illustrations: read for authenticated users
     match /images/{imageId} {
-      allow read: if request.auth != null;
+      allow read: if true;
       allow write: if false; // Only admin SDKs upload
     }
     

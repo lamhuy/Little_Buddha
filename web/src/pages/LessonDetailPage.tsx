@@ -34,7 +34,7 @@ export const LessonDetailPage: React.FC = () => {
 
   return (
     <div className="container animate-fade-in" style={{ padding: '2rem 1.5rem', maxWidth: '800px' }}>
-      <Link to="/select-age" style={{ display: 'inline-block', marginBottom: '1.5rem', fontWeight: 500 }}>&larr; Back to Age Groups</Link>
+      <Link to={`/lessons/${lesson.targetAgeTier}`} style={{ display: 'inline-block', marginBottom: '1.5rem', fontWeight: 500 }}>&larr; Back to Lessons</Link>
       
       <div className="card" style={{ display: 'flex', flexDirection: 'column', minHeight: '60vh' }}>
         <h1 style={{ fontSize: '2.5rem', marginBottom: '1rem', letterSpacing: '-0.02em', lineHeight: '1.2' }}>{lesson.title}</h1>
@@ -45,12 +45,12 @@ export const LessonDetailPage: React.FC = () => {
                 {lesson.pages[currentPage].imageRef && (
                   <FirebaseImage imageRefPath={lesson.pages[currentPage].imageRef!} alt={`Illustration for ${lesson.title} - Page ${currentPage + 1}`} />
                 )}
-                <div style={{ whiteSpace: 'pre-line', lineHeight: '1.8', fontSize: '1.5rem', marginBottom: '2rem' }}>
-                  {lesson.pages[currentPage].text}
-                </div>
                 {lesson.pages[currentPage].audioRef && (
                   <AudioPlayer audioRefPath={lesson.pages[currentPage].audioRef} />
                 )}
+                <div style={{ whiteSpace: 'pre-line', lineHeight: '1.8', fontSize: '1.5rem', marginBottom: '2rem' }}>
+                  {lesson.pages[currentPage].text}
+                </div>
               </div>
             )}
 
