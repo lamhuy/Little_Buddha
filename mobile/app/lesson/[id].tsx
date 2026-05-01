@@ -1,15 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, ActivityIndicator, TouchableOpacity } from 'react-native';
-import { useAuth } from '../context/AuthContext';
-import { EducationalModule } from '../models/types';
-import { AudioPlayer } from '../components/AudioPlayer';
-import { FirebaseImage } from '../components/FirebaseImage';
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { Ionicons } from '@expo/vector-icons';
+import { getLesson } from '../../src/services/lessonService';
+import type { EducationalModule } from '../../src/models/types';
+import { AudioPlayer } from '../../src/components/AudioPlayer';
+import { FirebaseImage } from '../../src/components/FirebaseImage';
 
-const API_BASE_URL = 'http://localhost:3000/api/v1';
-
-export const LessonDetailScreen = ({ route }: any) => {
-  const { id } = route.params;
-  const { jwt } = useAuth();
+export default function LessonDetailScreen() {
+  const { id } = useLocalSearchParams<{ id: string }>();
+  const router = useRouter();
+  
   const [lesson, setLesson] = useState<EducationalModule | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -18,26 +20,41 @@ export const LessonDetailScreen = ({ route }: any) => {
   useEffect(() => {
     const fetchLessonDetail = async () => {
       try {
-        const response = await fetch(`${API_BASE_URL}/lessons/${id}`, {
-          headers: { 'Authorization': `Bearer ${jwt}` }
-        });
-        const json = await response.json();
-        if (response.ok) {
-          setLesson(json.data);
-        } else {
-          setError(json.error || 'Failed to open lesson');
+        if (id) {
+          const data = await getLesson(id);
+          if (data) {
+            setLesson(data);
+          } else {
+            setError('Lesson not found');
+          }
         }
       } catch (err) {
-        setError('Network error');
+        setError('Network error loading lesson');
       } finally {
         setLoading(false);
       }
     };
     fetchLessonDetail();
-  }, [id, jwt]);
+  }, [id]);
 
-  if (loading) return <View style={styles.center}><ActivityIndicator size="large" color="#D4AF37" /></View>;
-  if (error || !lesson) return <View style={styles.center}><Text style={styles.errorText}>{error}</Text></View>;
+  if (loading) {
+    return (
+      <SafeAreaView style={styles.center}>
+        <ActivityIndicator size="large" color="#D4AF37" />
+      </SafeAreaView>
+    );
+  }
+
+  if (error || !lesson) {
+    return (
+      <SafeAreaView style={styles.center}>
+        <Text style={styles.errorText}>{error}</Text>
+        <TouchableOpacity onPress={() => router.push('/select-age')} style={{ marginTop: 20 }}>
+          <Text style={{ color: '#2C3E50', fontWeight: 'bold' }}>Back to Age Groups</Text>
+        </TouchableOpacity>
+      </SafeAreaView>
+    );
+  }
 
   const hasSummary = (lesson.summaryPoints && lesson.summaryPoints.length > 0) || (lesson.discussionQuestions && lesson.discussionQuestions.length > 0);
   const totalPages = (lesson.pages?.length || 0) + (hasSummary ? 1 : 0);
@@ -47,24 +64,34 @@ export const LessonDetailScreen = ({ route }: any) => {
   const handleNext = () => setCurrentPage((prev) => Math.min(totalPages - 1, prev + 1));
 
   return (
-    <View style={styles.container}>
-      <ScrollView contentContainerStyle={styles.contentContainer} testID="lesson-scroll-view">
-        <Text style={styles.title} testID="lesson-title">{lesson.title}</Text>
+    <SafeAreaView style={styles.container}>
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => router.push(`/lessons/${lesson.targetAgeTier}` as any)} style={styles.backButton}>
+          <Ionicons name="arrow-back" size={24} color="#2C3E50" />
+          <Text style={styles.backText}>Back to Lessons</Text>
+        </TouchableOpacity>
+      </View>
+
+      <ScrollView contentContainerStyle={styles.contentContainer} showsVerticalScrollIndicator={false}>
+        <Text style={styles.title}>{lesson.title}</Text>
         
         {!isSummaryPage && lesson.pages && lesson.pages[currentPage] && (
           <View>
             {lesson.pages[currentPage].imageRef ? (
-              <FirebaseImage key={lesson.pages[currentPage].imageRef} imageRef={lesson.pages[currentPage].imageRef!} />
+              <FirebaseImage key={`img-${currentPage}`} imageRef={lesson.pages[currentPage].imageRef!} />
             ) : null}
+            
+            {/* Audio placed beneath image and above text to mirror web */}
             {lesson.pages[currentPage].audioRef ? (
               <AudioPlayer 
-                key={lesson.pages[currentPage].audioRef} 
+                key={`aud-${currentPage}`} 
                 audioRef={lesson.pages[currentPage].audioRef} 
                 title={`Page ${currentPage + 1}`} 
               />
             ) : null}
+
             <View style={styles.section}>
-              <Text style={styles.bodyText} testID="lesson-content">{lesson.pages[currentPage].text}</Text>
+              <Text style={styles.bodyText}>{lesson.pages[currentPage].text}</Text>
             </View>
           </View>
         )}
@@ -72,7 +99,7 @@ export const LessonDetailScreen = ({ route }: any) => {
         {isSummaryPage && (
           <View>
             {lesson.summaryPoints && lesson.summaryPoints.length > 0 && (
-              <View style={styles.section} testID="lesson-summary">
+              <View style={styles.section}>
                 <Text style={styles.sectionHeader}>Key Takeaways</Text>
                 {lesson.summaryPoints.map((point, index) => (
                   <Text key={index} style={styles.bulletPoint}>• {point}</Text>
@@ -81,7 +108,7 @@ export const LessonDetailScreen = ({ route }: any) => {
             )}
 
             {lesson.discussionQuestions && lesson.discussionQuestions.length > 0 && (
-              <View style={styles.section} testID="lesson-questions">
+              <View style={styles.section}>
                 <Text style={styles.sectionHeader}>Discussion Questions</Text>
                 {lesson.discussionQuestions.map((q, index) => (
                   <Text key={index} style={styles.questionText}>{index + 1}. {q}</Text>
@@ -111,69 +138,84 @@ export const LessonDetailScreen = ({ route }: any) => {
           <Text style={[styles.buttonText, currentPage === totalPages - 1 && styles.buttonTextDisabled]}>Next</Text>
         </TouchableOpacity>
       </View>
-    </View>
+    </SafeAreaView>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F7F6F0',
+    backgroundColor: '#FDFBF7',
   },
   center: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F7F6F0',
+    backgroundColor: '#FDFBF7',
+  },
+  header: {
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+  },
+  backButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  backText: {
+    marginLeft: 4,
+    fontSize: 16,
+    color: '#2C3E50',
+    fontWeight: '500',
   },
   contentContainer: {
     padding: 20,
     paddingBottom: 40,
   },
   title: {
-    fontSize: 26,
-    fontWeight: 'bold',
+    fontSize: 28,
+    fontWeight: '800',
     color: '#2C3E50',
-    marginBottom: 10,
+    marginBottom: 20,
+    lineHeight: 34,
   },
   section: {
-    marginTop: 20,
+    marginTop: 15,
     backgroundColor: '#FFF',
-    padding: 20,
-    borderRadius: 12,
+    padding: 24,
+    borderRadius: 16,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
+    shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.05,
-    shadowRadius: 2,
-    elevation: 1,
+    shadowRadius: 12,
+    elevation: 3,
   },
   sectionHeader: {
-    fontSize: 18,
-    fontWeight: '600',
+    fontSize: 20,
+    fontWeight: '700',
     color: '#D4AF37',
-    marginBottom: 10,
+    marginBottom: 16,
   },
   bodyText: {
     fontSize: 18,
-    lineHeight: 28,
+    lineHeight: 30,
     color: '#34495E',
   },
   bulletPoint: {
-    fontSize: 16,
-    lineHeight: 24,
+    fontSize: 17,
+    lineHeight: 26,
     color: '#34495E',
-    marginBottom: 8,
-    paddingLeft: 10,
+    marginBottom: 12,
+    paddingLeft: 5,
   },
   questionText: {
-    fontSize: 16,
-    lineHeight: 24,
+    fontSize: 17,
+    lineHeight: 26,
     color: '#2C3E50',
     fontWeight: '500',
-    marginBottom: 10,
+    marginBottom: 12,
     backgroundColor: '#F8F9F9',
-    padding: 10,
-    borderRadius: 8,
+    padding: 16,
+    borderRadius: 12,
   },
   errorText: {
     color: '#E74C3C',
@@ -186,13 +228,13 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: '#FFF',
     borderTopWidth: 1,
-    borderTopColor: '#EAECEE',
+    borderTopColor: '#F2F2F2',
   },
   button: {
     backgroundColor: '#D4AF37',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 8,
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 12,
   },
   buttonDisabled: {
     backgroundColor: '#EAECEE',
@@ -207,7 +249,7 @@ const styles = StyleSheet.create({
   },
   pageIndicator: {
     fontSize: 16,
-    fontWeight: '500',
+    fontWeight: '600',
     color: '#7F8C8D',
   }
 });

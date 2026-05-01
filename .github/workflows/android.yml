@@ -1,0 +1,181 @@
+name: Build & Deploy Android
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'mobile/**'
+  workflow_dispatch:
+    inputs:
+      track:
+        description: 'Play Store track to deploy to'
+        required: true
+        default: 'internal'
+        type: choice
+        options:
+          - internal
+          - beta
+          - production
+
+permissions:
+  contents: read
+
+env:
+  NODE_VERSION: '22'
+  JAVA_VERSION: '17'
+  RUBY_VERSION: '3.2'
+
+jobs:
+  build-android:
+    name: Build Android APK & AAB
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      # ─── Checkout ───────────────────────────────────────────────
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # ─── Runtime Setup ──────────────────────────────────────────
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: mobile/package-lock.json
+
+      - name: Setup Java (JDK)
+        uses: actions/setup-java@v4
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: 'temurin'
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ env.RUBY_VERSION }}
+          bundler-cache: true
+          working-directory: mobile
+
+      # ─── Dependencies ───────────────────────────────────────────
+      - name: Install JS dependencies
+        working-directory: mobile
+        run: npm ci
+
+      # ─── Expo Prebuild (generates android/ directory) ───────────
+      - name: Generate native Android project
+        working-directory: mobile
+        run: npx expo prebuild --platform android --clean
+
+      # ─── Decode Signing Keystore ────────────────────────────────
+      - name: Decode Android keystore
+        working-directory: mobile
+        run: |
+          echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 --decode > android/app/release.keystore
+
+      # ─── Gradle Cache ──────────────────────────────────────────
+      - name: Cache Gradle packages
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: gradle-${{ runner.os }}-${{ hashFiles('mobile/android/**/*.gradle*', 'mobile/android/gradle-wrapper.properties') }}
+          restore-keys: |
+            gradle-${{ runner.os }}-
+
+      # ─── Build APK (for artifact download) ──────────────────────
+      - name: Build release APK
+        working-directory: mobile/android
+        env:
+          KEYSTORE_PATH: ${{ github.workspace }}/mobile/android/app/release.keystore
+          KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          ./gradlew assembleRelease \
+            -Pandroid.injected.signing.store.file="$KEYSTORE_PATH" \
+            -Pandroid.injected.signing.store.password="$KEYSTORE_PASSWORD" \
+            -Pandroid.injected.signing.key.alias="$KEY_ALIAS" \
+            -Pandroid.injected.signing.key.password="$KEY_PASSWORD"
+
+      # ─── Build AAB (for Play Store upload) ──────────────────────
+      - name: Build release AAB
+        working-directory: mobile/android
+        env:
+          KEYSTORE_PATH: ${{ github.workspace }}/mobile/android/app/release.keystore
+          KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          ./gradlew bundleRelease \
+            -Pandroid.injected.signing.store.file="$KEYSTORE_PATH" \
+            -Pandroid.injected.signing.store.password="$KEYSTORE_PASSWORD" \
+            -Pandroid.injected.signing.key.alias="$KEY_ALIAS" \
+            -Pandroid.injected.signing.key.password="$KEY_PASSWORD"
+
+      # ─── Upload APK Artifact ────────────────────────────────────
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: little-buddha-release-apk
+          path: mobile/android/app/build/outputs/apk/release/*.apk
+          retention-days: 30
+
+      # ─── Upload AAB Artifact ────────────────────────────────────
+      - name: Upload AAB artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: little-buddha-release-aab
+          path: mobile/android/app/build/outputs/bundle/release/*.aab
+          retention-days: 30
+
+  deploy-play-store:
+    name: Publish to Google Play Store
+    needs: build-android
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    # Only deploy on push to main or manual trigger — never on PRs
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2'
+          bundler-cache: true
+          working-directory: mobile
+
+      - name: Download AAB artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: little-buddha-release-aab
+          path: mobile/android/app/build/outputs/bundle/release
+
+      # ─── Google Play Service Account Key ────────────────────────
+      - name: Decode Google Play service account key
+        working-directory: mobile
+        run: |
+          echo "${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON }}" | base64 --decode > google-play-key.json
+
+      # ─── Determine deployment track ────────────────────────────
+      - name: Set deployment track
+        id: track
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "track=${{ github.event.inputs.track }}" >> $GITHUB_OUTPUT
+          else
+            echo "track=internal" >> $GITHUB_OUTPUT
+          fi
+
+      # ─── Deploy via Fastlane ────────────────────────────────────
+      - name: Deploy to Google Play (${{ steps.track.outputs.track }})
+        working-directory: mobile
+        env:
+          GOOGLE_PLAY_JSON_KEY_PATH: ${{ github.workspace }}/mobile/google-play-key.json
+        run: |
+          bundle exec fastlane android deploy_${{ steps.track.outputs.track }}

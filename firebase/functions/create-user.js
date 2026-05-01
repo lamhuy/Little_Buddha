@@ -30,7 +30,7 @@ async function upsertEmulatorUser() {
   console.log('\n── Emulator ──');
   enableEmulatorEnv();
 
-  const emulatorApp = admin.initializeApp({ projectId: 'demo-little-buddha' }, 'emulator');
+  const emulatorApp = admin.initializeApp({ projectId: 'little-buddha-ff838' }, 'emulator');
   const emulatorDb = getFirestore(emulatorApp);
 
   try {
@@ -111,8 +111,8 @@ async function upsertProductionUser() {
           uid = user.uid;
           console.log('  Auth user created:', uid);
         } catch (createUserErr) {
-           console.warn('  ⚠ Auth creation skipped:', createUserErr.message);
-           console.warn('    Proceeding to create Firestore document using UID:', uid);
+          console.warn('  ⚠ Auth creation skipped:', createUserErr.message);
+          console.warn('    Proceeding to create Firestore document using UID:', uid);
         }
       } else {
         console.warn('  ⚠ Auth lookup failed:', e.message);

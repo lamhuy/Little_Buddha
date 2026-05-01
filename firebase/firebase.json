@@ -6,14 +6,13 @@
     ]
   },
   "firestore": {
-    "rules": "firestore.rules",
-    "indexes": "firestore.indexes.json"
+    "rules": "firestore.rules"
   },
   "storage": {
     "rules": "storage.rules"
   },
   "hosting": {
-    "public": "../web/dist",
+    "public": "dist",
     "ignore": [
       "firebase.json",
       "**/.*",

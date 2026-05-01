@@ -4,10 +4,13 @@ import { getFirestore, connectFirestoreEmulator } from 'firebase/firestore';
 import { getStorage, connectStorageEmulator } from 'firebase/storage';
 
 const firebaseConfig = {
-  projectId: "demo-little-buddha",
-  apiKey: "demo-api-key",
-  authDomain: "demo-little-buddha.firebaseapp.com",
-  storageBucket: "demo-little-buddha.appspot.com",
+  apiKey: "AIzaSyBZexdfz9f4OLtoRVFzqKTS6A2iWuTJfMM",
+  authDomain: "little-buddha-ff838.firebaseapp.com",
+  projectId: "little-buddha-ff838",
+  storageBucket: "little-buddha-ff838.firebasestorage.app",
+  messagingSenderId: "625783802659",
+  appId: "1:625783802659:web:456aaa9786ec4e76c15a96",
+  measurementId: "G-TEMTMR6ZKK"
 };
 
 const app = initializeApp(firebaseConfig);
