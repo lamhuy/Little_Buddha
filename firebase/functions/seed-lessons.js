@@ -246,6 +246,66 @@ async function seed() {
 
   Along with grounding, learning to observe your thoughts without judging them is a profound skill. Imagine your anxious thoughts as dark clouds passing across the sky. You are not the clouds; you are the sky. The clouds can be ugly and stormy, but they always pass, while the sky remains perfectly intact underneath. You have the resilience to survive these storms. Be kind to yourself, talk to someone you trust when the burden feels too heavy, and remember that this period of overwhelming change is temporary. You are building emotional muscles that will serve you for the rest of your life.`;
 
+    const textContentLesson_fourTruths = `Have you ever wondered why life sometimes feels hard, even when everything seems like it should be fine? Maybe you got the new video game you wanted, but after a week you are already bored and want something else. Or maybe you aced a test, but instead of feeling great, you are already stressed about the next one. The Buddha noticed this same pattern over 2,500 years ago, and he came up with a simple but powerful explanation called the Four Noble Truths.
+
+  The First Noble Truth is called Dukkha, which means "suffering" or "unsatisfactoriness." But don't worry, it doesn't mean life is always terrible! It means that no matter how good things get, there is always a little itch, a little feeling that something is missing. Think of it like this: you know that feeling when you finish a really amazing book or TV show? There is this weird emptiness afterward. That's dukkha. It is the gap between what we have and what we wish we had.
+
+  The Second Noble Truth is Samudaya, which means "the cause of suffering." The Buddha said our suffering comes from craving, which means constantly wanting things to be different from how they are. We want more, we want better, we want things to last forever. It is like being on a treadmill that never stops. You keep running toward the next thing, but you never actually arrive anywhere.
+
+  The Third Noble Truth is Nirodha, which means "the end of suffering." This is the good news! The Buddha said it IS possible to step off that treadmill. When you stop clinging to things, when you learn to enjoy them without desperately needing them, you find a deep, lasting peace that doesn't depend on getting the next new thing.
+
+  The Fourth Noble Truth is Magga, which means "the path." This is the Buddha's roadmap for how to actually get to that peaceful place. It is called the Noble Eightfold Path, and it includes things like thinking clearly, speaking kindly, and paying attention to the present moment. You don't have to be perfect at it. It is a practice, like learning an instrument. The more you work at it, the better you get. The Four Noble Truths aren't about being sad or giving up fun. They are about understanding why we sometimes feel stuck, and knowing there is a clear way forward.`;
+
+    const textContentLesson_eightfoldPath = `Imagine you are trying to get to an incredible destination, maybe a hidden waterfall deep in a forest or the final boss level of the hardest video game ever made. You know it exists, and you really want to get there. But what if you had no map, no GPS, and no guide? You would wander around in circles, getting frustrated and lost. Over 2,500 years ago, the Buddha found that incredible destination, a place of lasting inner peace, and then he drew a map so that everyone else could find it too. He called this map the Noble Eightfold Path.
+
+  Think of the Eightfold Path as having eight directions on a compass. They are not eight separate steps you do one after another, like climbing stairs. Instead, they all work together at the same time, like the different instruments in a band. Each one makes the others sound better. The first two directions are about Wisdom. Right View means seeing the world as it really is, not just how you wish it was. Right Intention means making sure your goals come from kindness and not from selfishness or anger.
+
+  The next three directions are about Ethics, which is how you behave in the world. Right Speech means being honest and kind with your words. Think about the last text message you sent. Was it truthful? Was it helpful? Right Action means doing things that help rather than harm. And Right Livelihood means that when you grow up and get a job, you choose one that does not hurt other people or the planet.
+
+  The last three directions are about training your Mind. Right Effort means putting energy into growing your good qualities and shrinking your bad habits, kind of like practicing free throws to get better at basketball while also working to stop fouling. Right Mindfulness means paying attention to what is happening right now, instead of zoning out or worrying about tomorrow. And Right Concentration means learning to focus your mind deeply, like when you are so absorbed in a book that you don't even hear someone calling your name.
+
+  Here is the cool part: you do not have to be a monk or live in a monastery to follow this path. You can practice it right now, today. When you choose your words carefully online, that is Right Speech. When you pay attention in class instead of daydreaming, that is Right Mindfulness. When you decide to help a friend instead of ignoring them, that is Right Action. The Eightfold Path is not about being perfect. It is about trying every day to be a little bit wiser, a little bit kinder, and a little bit more aware. That is how you find your way to that hidden waterfall of peace.`;
+
+    const textContentLesson_impermanence = `Think about the last trend that swept through your school. Maybe it was a viral dance on TikTok, a new slang word everyone was using, or a type of candy that everyone had to have. For a while, it felt like it would last forever. But then, almost overnight, it vanished and something new took its place. This cycle of things appearing, existing for a while, and then fading away is one of the most important teachings in Buddhism. It is called Anicca, which is a Pali word that means "impermanence."
+
+  Impermanence means that nothing in the universe stays the same forever. Absolutely nothing. The weather changes, seasons change, your body grows taller, your friendships evolve, and even mountains slowly crumble over millions of years. Think of a sandcastle at the beach. You might spend an hour building the most amazing castle with towers and a moat. But when the tide comes in, the waves wash it away. That does not mean it was pointless to build it! You can still enjoy making it and admiring it. But clinging to it and crying because the ocean did what oceans do only adds unnecessary sadness.
+
+  The Buddha taught that a lot of our unhappiness comes from pretending things are permanent when they are not. We get a new phone and think it will always feel shiny and exciting. We make a best friend and assume they will always be around. We have a great day and expect tomorrow to be just as good. When those things change, as they always do, we feel disappointed and even angry. But the problem was never the change itself. The problem was our expectation that things would stay the same.
+
+  Here is where it gets really cool. Impermanence is not just bad news. It is also incredibly good news! If you are having a terrible day, that day is impermanent too. If you failed a test, that failure is not permanent. If you are going through a tough time with a friend, that difficulty will change. Impermanence means that no dark cloud hangs around forever. There is always a chance for something new and better to come along.
+
+  The next time something changes in your life and it bothers you, try this: instead of fighting the change, just notice it. Say to yourself, "This is impermanence, and that is okay." You can still feel sad or frustrated, but underneath those feelings, you will start to notice a quiet calmness. That calmness comes from understanding how the world actually works. Impermanence is not something to be afraid of. It is the engine that keeps life interesting, fresh, and full of possibility.`;
+
+    const textContentLesson_karma = `You have probably heard the word "karma" before, maybe in a movie or a meme. People often say things like, "That's karma!" when something bad happens to someone who was being mean. But the real meaning of karma in Buddhism is much deeper and more interesting than just "what goes around comes around." The Pali word "kamma" actually means "action" or "deed," and the Buddha taught that every intentional action you take plants a seed that will eventually grow into a result.
+
+  Think of your mind as a garden. Every thought you think, every word you say, and every action you take is like planting a seed in that garden. Kind thoughts and generous actions plant flowers and fruit trees. Mean words and selfish behavior plant thorny weeds. You might not see the results right away, just like a real garden takes time to grow. But over days, weeks, and months, those seeds sprout. Your garden becomes whatever you have been planting, whether you realize it or not.
+
+  One of the most important parts of karma is the word "intentional." The Buddha said it is your intention behind the action that matters most. If you accidentally step on someone's foot, that is very different from stomping on it on purpose. If you share your lunch because you genuinely want to help a hungry friend, that plants a much stronger positive seed than sharing it only because a teacher told you to. Karma is about what is happening inside your heart and mind, not just what it looks like from the outside.
+
+  Here is something else that makes karma really powerful: you are never stuck with a bad garden. Even if you have been planting weeds for a while, you can start planting flowers right now, today. Every single moment gives you a brand new chance to choose a better action. The Buddha never said karma is punishment. It is simply how things work, like gravity. If you drop a ball, it falls. If you plant a sunflower seed, a sunflower grows. Your actions work the same way.
+
+  The coolest thing about understanding karma is that it puts you in the driver's seat of your own life. You are not waiting for some outside force to reward you or punish you. You are creating your own future with every choice you make. So the next time you are about to say something unkind or do something you know is wrong, pause for one second and ask yourself, "What kind of seed am I about to plant?" That one second of pause is one of the most powerful tools you will ever have.`;
+
+    const textContentLesson_deerKing = `Long ago, in a vast forest bordered by a sparkling river, there lived two herds of deer. One herd was led by a golden deer called Nigrodha, whose coat shone like polished amber in the sunlight. He was wise, patient, and deeply loved by every deer in his herd. The other herd was led by a deer named Branch, who was bold and proud. Both herds lived peacefully in the forest until a human king named Brahmadatta discovered their grazing grounds and became obsessed with hunting deer.
+
+  King Brahmadatta ordered his soldiers to build a great park and trap both herds inside it. Every day, the king and his hunters would enter the park and chase the deer, shooting arrows at whichever ones they could catch. The deer were terrified. They ran in panic, crashing into each other, breaking their legs, and hurting themselves even when the arrows missed. More deer were injured from the chaos of running than from the arrows themselves.
+
+  Nigrodha could not bear to watch his herd suffer like this. He went to Branch and proposed a plan. "Let us make an agreement with the king," he said. "Instead of this terrifying hunt every day, one deer will volunteer to go to the king each day, alternating between our herds. This way, the rest can live in peace without the constant fear and stampede." Branch agreed, and Nigrodha bravely walked to the king and spoke to him directly. The king was amazed by his courage and accepted the arrangement.
+
+  The system worked for a while, until the day came when a mother deer from Branch's herd was chosen. She had just given birth to a tiny fawn. "Please," she begged Branch, "let someone else go today. My baby is too young to survive without me. Just give me a few days." But Branch coldly refused. "The rules are the rules," he said. Desperate, the mother deer went to Nigrodha. Without a moment of hesitation, Nigrodha said, "I will go in your place." He walked calmly to King Brahmadatta and knelt before him.
+
+  The king was shocked. "You are the leader! Why would you offer yourself?" Nigrodha replied, "A mother needed her life today more than I needed mine. A true leader does not ask others to make sacrifices he would not make himself." The king was so moved that tears rolled down his cheeks. He freed Nigrodha, then freed both herds, and eventually declared the entire forest a protected sanctuary where no animal could ever be hunted again. This story teaches us that courage is not about being fearless. It is about caring so deeply for others that you are willing to stand up for them, even when it costs you everything.`;
+
+    const textContentLesson_fourSights = `About 2,500 years ago, in a kingdom at the foot of the Himalayan mountains, a prince named Siddhartha Gautama lived inside a magnificent palace. His father, King Suddhodana, loved his son so much that he tried to protect him from every kind of pain. The palace had beautiful gardens, the finest food, talented musicians, and everything a young person could want. Siddhartha had never seen anyone who was sick, old, or suffering. His father made absolutely sure of it.
+
+  But Siddhartha was curious. He wanted to know what life was like beyond the palace walls. So one day, he convinced his chariot driver, Channa, to take him into the city. What happened next changed his life forever. On his first trip, Siddhartha saw an old man, bent over and wrinkled, struggling to walk. "What happened to him?" Siddhartha asked, horrified. Channa replied, "That is old age, my prince. It happens to everyone who lives long enough." Siddhartha was stunned. No one had ever told him that people grow old.
+
+  On his second trip out, Siddhartha saw a sick person lying by the road, groaning in pain. On his third trip, he witnessed a funeral procession, with a family weeping as they carried a loved one who had died. Each sight hit him like a lightning bolt. He realized that no matter how rich or powerful someone is, they cannot escape old age, sickness, and death. His perfect palace life suddenly felt like an illusion, a beautiful bubble that would eventually pop.
+
+  But then, on his fourth trip, Siddhartha saw something completely different. He saw a wandering monk, dressed in simple robes, walking peacefully through the crowded streets with a calm, gentle smile on his face. Despite owning almost nothing, this monk radiated a peace that Siddhartha had never felt inside his luxurious palace. "Who is that man?" he asked. "He is a seeker," Channa answered. "He has given up worldly comforts to search for the truth about suffering and how to end it."
+
+  That fourth sight sparked something inside Siddhartha. He realized that hiding from suffering was not the answer. The real answer was to understand it and find a way through it. This moment was so powerful that it led Siddhartha to leave his palace, become a wandering seeker himself, and eventually become the Buddha, the "Awakened One." The story of the Four Sights teaches us that we cannot hide from the hard parts of life. But instead of being afraid, we can be curious. We can ask "why," seek answers, and find our own inner peace, not by running from reality, but by facing it with courage and compassion.`;
+
     const lessons = [
       {
         id: "lesson-0-7",
@@ -345,6 +405,60 @@ async function seed() {
         targetAgeTier: "8-12",
         summaryPoints: ["Find quiet", "Focus on breath"],
         discussionQuestions: ["Where is your quiet space?"]
+      },
+      {
+        id: "lesson-8-12-four-truths",
+        title: "The Four Noble Truths",
+        textContent: textContentLesson_fourTruths,
+        audioRef: "audio/lesson-8-12-four-truths.mp3",
+        targetAgeTier: "8-12",
+        summaryPoints: ["Dukkha: life has unsatisfactoriness", "Craving is the cause", "Peace is possible", "The Eightfold Path is the way"],
+        discussionQuestions: ["Can you think of a time you got something you wanted but still felt unsatisfied?", "How is craving like a treadmill?", "What does it mean to enjoy something without clinging to it?"]
+      },
+      {
+        id: "lesson-8-12-eightfold-path",
+        title: "The Noble Eightfold Path",
+        textContent: textContentLesson_eightfoldPath,
+        audioRef: "audio/lesson-8-12-eightfold-path.mp3",
+        targetAgeTier: "8-12",
+        summaryPoints: ["Eight directions, not eight steps", "Wisdom, Ethics, and Mind work together", "You can practice it right now, today"],
+        discussionQuestions: ["Which part of the Eightfold Path do you think is hardest for kids your age?", "Can you think of a time you used Right Speech without knowing it?", "How is the Eightfold Path like a GPS?"]
+      },
+      {
+        id: "lesson-8-12-impermanence",
+        title: "Nothing Lasts Forever: Understanding Impermanence",
+        textContent: textContentLesson_impermanence,
+        audioRef: "audio/lesson-8-12-impermanence.mp3",
+        targetAgeTier: "8-12",
+        summaryPoints: ["Everything changes, always", "Clinging causes extra suffering", "Bad times are impermanent too", "Change keeps life interesting"],
+        discussionQuestions: ["What is something you used to love that you have now outgrown?", "How can impermanence actually be good news?", "What is something that changed in your life that turned out better than expected?"]
+      },
+      {
+        id: "lesson-8-12-karma",
+        title: "Karma: Your Mind is a Garden",
+        textContent: textContentLesson_karma,
+        audioRef: "audio/lesson-8-12-karma.mp3",
+        targetAgeTier: "8-12",
+        summaryPoints: ["Every action plants a seed", "Intention matters most", "You can always start fresh", "You create your own future"],
+        discussionQuestions: ["What kind of seeds have you been planting lately?", "Why does intention matter more than the action itself?", "What would you like your mind-garden to look like?"]
+      },
+      {
+        id: "lesson-8-12-deer-king",
+        title: "The Deer King: A Jataka Tale of Courage",
+        textContent: textContentLesson_deerKing,
+        audioRef: "audio/lesson-8-12-deer-king.mp3",
+        targetAgeTier: "8-12",
+        summaryPoints: ["True leaders protect others", "Courage means standing up for what is right", "Compassion can change even the hardest hearts"],
+        discussionQuestions: ["What makes Nigrodha different from Branch as a leader?", "Have you ever stood up for someone who needed help?", "Why was the king moved to tears?"]
+      },
+      {
+        id: "lesson-8-12-four-sights",
+        title: "The Four Sights: How Siddhartha Woke Up",
+        textContent: textContentLesson_fourSights,
+        audioRef: "audio/lesson-8-12-four-sights.mp3",
+        targetAgeTier: "8-12",
+        summaryPoints: ["Hiding from problems does not solve them", "Curiosity leads to understanding", "True peace comes from facing reality"],
+        discussionQuestions: ["Why do you think Siddhartha's father tried to hide suffering from him?", "Which of the Four Sights would have affected you the most?", "How can being curious about hard things help you grow?"]
       },
       {
         id: "lesson-13-18",

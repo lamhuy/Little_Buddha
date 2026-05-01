@@ -27,3 +27,9 @@ This is more of an activity-based book that uses Buddhist principles. It provide
 
 10. The Cat Who Went to Heaven by Elizabeth Coatsworth
 A Newbery Medal winner, this story is about a poor Japanese artist commissioned to paint the Buddha's death. It explores themes of inclusion and compassion as the artist decides to include a cat in the painting—an animal traditionally excluded from such honors—risking his reputation to show that all beings are worthy of love.
+
+11. The Deer King (Nigrodhamiga Jataka)
+One of the most beloved Jataka Tales, this story follows Nigrodha, a golden deer king who offers his own life to save a mother deer and her newborn fawn. His selfless courage so moves the human king Brahmadatta that he frees both herds and declares the forest a sanctuary. It teaches sacrifice, true leadership, and how compassion can transform even the powerful.
+
+12. The Four Sights (Siddhartha's Awakening)
+The foundational narrative of Prince Siddhartha's first encounters with old age, sickness, death, and a wandering monk outside his sheltered palace. These four encounters shattered his illusions and sparked the spiritual quest that led to his enlightenment as the Buddha. It teaches that facing reality with curiosity is the first step toward wisdom.
